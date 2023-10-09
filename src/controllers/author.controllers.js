@@ -49,3 +49,38 @@ export const storeAuthor = async (req, res) => {
         return res.status(500).json({error: 'Server error'});
     }
 }
+
+export const updateAuthor = async (req, res) => {
+    const authorId = req.params.id;
+    const { name, lastname, biography } = req.body;
+    try {
+        const existAuthor = await authorModel.findById(authorId);
+        if (!existAuthor) {
+            return res.status(404).json({ error: 'Author not found' });
+        }
+        existAuthor.name = name;
+        existAuthor.lastname = lastname;
+        existAuthor.biography = biography;
+        const updatedAuthor = await existAuthor.save();
+        return res.status(200).json({ author: updatedAuthor });
+    } catch (error) {
+        console.log('Error: ', error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+}
+
+export const deleteAuthor = async (req, res) => {
+    const authorId = req.params.id;
+    try {
+        const existAuthor = await authorModel.findById(authorId);
+        if (!existAuthor) {
+            return res.status(404).json({ error: 'Author not found' });
+        }
+        await existAuthor.remove();
+        return res.status(200).json({ message: 'Author deleted successfully' });
+    }
+    catch (error) {
+        console.log('Error: ', error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+}

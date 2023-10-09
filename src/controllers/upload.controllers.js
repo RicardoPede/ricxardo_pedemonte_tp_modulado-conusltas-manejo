@@ -1,6 +1,6 @@
 import multer from "multer";
 
-export const storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'src/uploads/');
     },

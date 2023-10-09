@@ -46,3 +46,33 @@ export const storeUsers = async (req, res) => {
         return res.status(500).json({ error: 'Server error' });
             }
     }    
+
+export const updateUsers = async (req, res) => {
+    const userId = req.params.id;
+    const { name, lastname, email, password } = req.body;
+    try {
+        const existUser = await userModel.findById(userId);
+        if (!existUser) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+        if (name) {
+            existUser.name = name;
+        }
+        if (lastname) {
+            existUser.lastname = lastname;
+        }
+        if (email) {
+            existUser.email = email;
+        }
+        if (password) {
+            let passHash = await bcrypt.hash(password, 10);
+            existUser.password = passHash;
+        }
+        const updatedUser = await existUser.save();
+        return res.status(200).json({ user: updatedUser });
+}
+    catch (error) {
+        console.log('Error: ', error);
+        return res.status(500).json({ error: 'Server error' });
+    }
+}
