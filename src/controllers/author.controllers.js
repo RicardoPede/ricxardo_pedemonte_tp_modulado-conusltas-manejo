@@ -23,18 +23,22 @@ export const indexAuthors = async (req, res) => {
 export const storeAuthor = async (req, res) => {
     try {
         const {name, lastname, biography, } = req.body;
-        if (!name) {
-            return res.status(400).json({ error: 'Missing name argument' });
-        }
-        if (!lastname) {
-            return res.status(400).json({ error: 'Missing lastname argument' });
-        }
-        if (!biography) {
-            return res.status(400).json({ error: 'Missing biography argument' });
+        if (!name || !lastname || !biography) {
+            const missingArguments = [];
+            if (!name) {
+                missingArguments.push('name');
+            }
+            if (!lastname) {
+                missingArguments.push('lastname');
+            }
+            if (!biography) {
+                missingArguments.push('biography');
+            }
+            return res.status(400).json({ error: 'Missing arguments', missingArguments });
         }
         const existAuthor = await authorModel.findOne({name, lastname});
         if (existAuthor) {
-            return res.status(400).json({ error: 'Author: Firstname Lastname exists' });
+            return res.status(400).json({ error: 'Author already exists' });
         }
         const author = new authorModel({name, lastname, biography});
         const save = await author.save();
