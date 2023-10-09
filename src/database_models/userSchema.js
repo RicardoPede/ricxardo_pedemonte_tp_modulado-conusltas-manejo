@@ -16,10 +16,6 @@ export const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        notEmpty: {errorMessage: "Debe incluir un email"
-        },
-        isEmail: {errorMessage: "No es un email válido"
-        },
         required: true
     },
     password: {
